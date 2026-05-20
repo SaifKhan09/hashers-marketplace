@@ -24,33 +24,43 @@ enum BookingStatus {
   ACCEPTED
   REJECTED
   CANCELLED
+  COMPLETED
+}
+
+enum TransactionStatus {
+  COMPLETED
+  FAILED
+  REFUNDED
 }
 
 model User {
-  id           String    @id @default(cuid())
-  firstName    String
-  lastName     String
-  email        String    @unique
-  passwordHash String
-  role         Role      @default(USER)
-  items        Item[]
-  bookings     Booking[] @relation("BuyerBookings")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id                   String        @id @default(cuid())
+  firstName            String
+  lastName             String
+  email                String        @unique
+  passwordHash         String
+  role                 Role          @default(USER)
+  items                Item[]
+  bookings             Booking[]     @relation("BuyerBookings")
+  buyerTransactions    Transaction[] @relation("BuyerTransactions")
+  sellerTransactions   Transaction[] @relation("SellerTransactions")
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
 }
 
 model Item {
-  id          String     @id @default(cuid())
-  sellerId    String
-  seller      User       @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  name        String
-  description String     @db.Text
-  price       Decimal    @db.Decimal(10, 2)
-  imageUrl    String?
-  status      ItemStatus @default(AVAILABLE)
-  bookings    Booking[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id            String        @id @default(cuid())
+  sellerId      String
+  seller        User          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  name          String
+  description   String        @db.Text
+  price         Decimal       @db.Decimal(10, 2)
+  imageUrl      String?
+  status        ItemStatus    @default(AVAILABLE)
+  bookings      Booking[]
+  transactions  Transaction[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   @@index([sellerId])
   @@index([status])
@@ -58,17 +68,42 @@ model Item {
 }
 
 model Booking {
-  id          String        @id @default(cuid())
-  itemId       String
-  buyerId      String
-  item         Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  buyer        User          @relation("BuyerBookings", fields: [buyerId], references: [id], onDelete: Cascade)
-  message      String?       @db.Text
-  status       BookingStatus @default(PENDING)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id            String        @id @default(cuid())
+  itemId        String
+  buyerId       String
+  item          Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  buyer         User          @relation("BuyerBookings", fields: [buyerId], references: [id], onDelete: Cascade)
+  message       String?       @db.Text
+  status        BookingStatus @default(PENDING)
+  transaction   Transaction?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   @@index([itemId])
   @@index([buyerId])
   @@index([status])
+}
+
+model Transaction {
+  id              String            @id @default(cuid())
+  bookingId       String            @unique
+  itemId          String
+  buyerId         String
+  sellerId        String
+  amount          Decimal           @db.Decimal(10, 2)
+  status          TransactionStatus
+  paymentMethod   String?
+  notes           String?           @db.Text
+  booking         Booking           @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  item            Item              @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  buyer           User              @relation("BuyerTransactions", fields: [buyerId], references: [id], onDelete: Cascade)
+  seller          User              @relation("SellerTransactions", fields: [sellerId], references: [id], onDelete: Cascade)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([itemId])
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([status])
+  @@index([createdAt])
 }
