@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
+import authRoutes from '../modules/auth/auth.routes';
 import { asyncHandler } from '../utils/async-handler';
 
 const router = Router();
@@ -14,5 +15,7 @@ router.get(
     });
   }),
 );
+
+router.use('/auth', authRoutes);
 
 export default router;
