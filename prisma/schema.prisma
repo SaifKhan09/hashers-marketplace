@@ -12,6 +12,13 @@ enum Role {
   ADMIN
 }
 
+enum ItemStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+  REMOVED
+}
+
 model User {
   id           String   @id @default(cuid())
   firstName    String
@@ -19,6 +26,24 @@ model User {
   email        String   @unique
   passwordHash String
   role         Role     @default(USER)
+  items        Item[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Item {
+  id          String     @id @default(cuid())
+  sellerId    String
+  seller      User       @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  name        String
+  description String     @db.Text
+  price       Decimal    @db.Decimal(10, 2)
+  imageUrl    String?
+  status      ItemStatus @default(AVAILABLE)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([sellerId])
+  @@index([status])
+  @@index([createdAt])
 }
