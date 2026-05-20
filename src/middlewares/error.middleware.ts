@@ -10,8 +10,13 @@ export const errorMiddleware = (
   error: unknown,
   req: Request,
   res: Response,
-  _next: NextFunction,
+  next: NextFunction,
 ): void => {
+  if (res.headersSent) {
+    next(error);
+    return;
+  }
+
   let statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
   let message = 'Internal server error';
   let details: unknown;
