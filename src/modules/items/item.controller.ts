@@ -97,7 +97,7 @@ export const getItemByIdController = async (
     throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized');
   }
 
-  const item = await getItemById(req.params.itemId, req.user.role as Role);
+  const item = await getItemById(req.params.itemId, req.user.role as Role, req.user.userId);
 
   res.status(StatusCodes.OK).json({
     success: true,

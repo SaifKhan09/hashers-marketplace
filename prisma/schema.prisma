@@ -19,16 +19,24 @@ enum ItemStatus {
   REMOVED
 }
 
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
 model User {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   firstName    String
   lastName     String
-  email        String   @unique
+  email        String    @unique
   passwordHash String
-  role         Role     @default(USER)
+  role         Role      @default(USER)
   items        Item[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  bookings     Booking[] @relation("BuyerBookings")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Item {
@@ -40,10 +48,27 @@ model Item {
   price       Decimal    @db.Decimal(10, 2)
   imageUrl    String?
   status      ItemStatus @default(AVAILABLE)
+  bookings    Booking[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
   @@index([sellerId])
   @@index([status])
   @@index([createdAt])
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  itemId       String
+  buyerId      String
+  item         Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  buyer        User          @relation("BuyerBookings", fields: [buyerId], references: [id], onDelete: Cascade)
+  message      String?       @db.Text
+  status       BookingStatus @default(PENDING)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([itemId])
+  @@index([buyerId])
+  @@index([status])
 }

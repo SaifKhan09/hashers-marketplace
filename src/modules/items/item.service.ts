@@ -127,7 +127,11 @@ export const getItems = async (
   };
 };
 
-export const getItemById = async (itemId: string, currentUserRole: Role) => {
+export const getItemById = async (
+  itemId: string,
+  currentUserRole: Role,
+  currentUserId?: string,
+) => {
   const item = await prisma.item.findUnique({
     where: { id: itemId },
     include: {
@@ -146,7 +150,10 @@ export const getItemById = async (itemId: string, currentUserRole: Role) => {
     throw new ApiError(StatusCodes.NOT_FOUND, 'Item not found');
   }
 
-  if (currentUserRole !== 'ADMIN' && item.status !== ItemStatus.AVAILABLE) {
+  const isAdmin = currentUserRole === 'ADMIN';
+  const isOwner = currentUserId && item.sellerId === currentUserId;
+
+  if (!isAdmin && !isOwner && item.status !== ItemStatus.AVAILABLE) {
     throw new ApiError(StatusCodes.NOT_FOUND, 'Item not found');
   }
 
