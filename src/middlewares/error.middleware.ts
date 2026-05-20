@@ -3,11 +3,12 @@ import { Prisma } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
 
 import { env } from '../config/env';
+import { logger } from '../lib/logger';
 import { ApiError } from '../utils/api-error';
 
 export const errorMiddleware = (
   error: unknown,
-  _req: Request,
+  req: Request,
   res: Response,
   _next: NextFunction,
 ): void => {
@@ -39,6 +40,15 @@ export const errorMiddleware = (
     message = err.message;
     details = err.details;
   }
+
+  logger.error('Request failed', {
+    method: req.method,
+    url: req.originalUrl,
+    statusCode,
+    message,
+    details,
+    error: error instanceof Error ? error.stack : error,
+  });
 
   res.status(statusCode).json({
     success: false,
