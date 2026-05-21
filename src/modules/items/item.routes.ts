@@ -197,6 +197,9 @@ router.get(
  *               imageUrl:
  *                 type: string
  *                 example: https://example.com/updated-item.jpg
+ *               status:
+ *                 type: string
+ *                 example: RESERVED 
  *     responses:
  *       200:
  *         description: Item updated successfully
