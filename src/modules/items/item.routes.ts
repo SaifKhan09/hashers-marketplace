@@ -175,13 +175,39 @@ router.get(
  *       - in: path
  *         name: itemId
  *         required: true
+ *         description: ID of the item to update
  *         schema:
  *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: iPhone 13 Pro
+ *               description:
+ *                 type: string
+ *                 example: Updated description for the item
+ *               price:
+ *                 type: number
+ *                 example: 52000
+ *               imageUrl:
+ *                 type: string
+ *                 example: https://example.com/updated-item.jpg
  *     responses:
  *       200:
  *         description: Item updated successfully
+ *       400:
+ *         description: Invalid request data
+ *       401:
+ *         description: Unauthorized
  *       403:
  *         description: Forbidden
+ *       404:
+ *         description: Item not found
  */
 router.patch(
   '/:itemId',
