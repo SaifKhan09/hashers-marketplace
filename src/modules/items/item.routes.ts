@@ -196,10 +196,16 @@ router.get(
  *                 example: 52000
  *               imageUrl:
  *                 type: string
- *                 example: https://example.com/updated-item.jpg
+ *                 example: https://example.com/updated-item.jpg 
  *               status:
- *                 type: string
- *                 example: RESERVED 
+ *                type: string
+ *                description: status for the booking
+ *                enum:
+ *                  - PENDING
+ *                  - APPROVED
+ *                  - REJECTED
+ *                  - CANCELLED
+ *                example: APPROVED
  *     responses:
  *       200:
  *         description: Item updated successfully
