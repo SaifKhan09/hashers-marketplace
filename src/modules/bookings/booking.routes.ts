@@ -111,11 +111,38 @@ router.get('/seller', authMiddleware, asyncHandler(getSellerBookingsController))
  *       - in: path
  *         name: bookingId
  *         required: true
+ *         description: ID of the booking to update
  *         schema:
  *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 description: New status for the booking
+ *                 enum:
+ *                   - PENDING
+ *                   - APPROVED
+ *                   - REJECTED
+ *                   - CANCELLED
+ *                 example: APPROVED
  *     responses:
  *       200:
  *         description: Booking status updated successfully
+ *       400:
+ *         description: Invalid request data
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Booking not found
  */
 router.patch(
   '/:bookingId/status',
