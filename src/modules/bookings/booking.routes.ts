@@ -33,9 +33,34 @@ const router = Router();
  *     summary: Create a booking for an item
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - itemId
+ *             properties:
+ *               itemId:
+ *                 type: string
+ *                 description: ID of the item to book
+ *                 example: clx123abc456
+ *               message:
+ *                 type: string
+ *                 description: Optional note from the buyer
+ *                 example: Need this item for two days
  *     responses:
  *       201:
  *         description: Booking created successfully
+ *       400:
+ *         description: Invalid request data
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Item not found
  */
 router.post(
   '/',
