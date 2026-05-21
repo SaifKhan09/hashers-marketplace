@@ -37,12 +37,44 @@ const router = Router();
  *   post:
  *     tags:
  *       - Items
- *     summary: Create a new marketplace item
+ *     summary: Create a new item
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - description
+ *               - price
+ *               - category
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: iPhone 13
+ *               description:
+ *                 type: string
+ *                 example: Good condition, lightly used
+ *               price:
+ *                 type: number
+ *                 example: 45000
+ *               category:
+ *                 type: string
+ *                 example: Electronics
+ *               imageUrl:
+ *                 type: string
+ *                 example: https://example.com/item.jpg
+ *               condition:
+ *                 type: string
+ *                 example: used
  *     responses:
  *       201:
  *         description: Item created successfully
+ *       400:
+ *         description: Invalid input
  *       401:
  *         description: Unauthorized
  */
