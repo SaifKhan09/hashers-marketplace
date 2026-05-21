@@ -27,9 +27,53 @@ const router = Router();
  *     summary: Complete or fail a transaction for an accepted booking
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - bookingId
+ *               - status
+ *               - paymentMethod
+ *               - notes
+ *             properties:
+ *               bookingId:
+ *                 type: string
+ *                 description: ID of the accepted booking for which the transaction is being processed
+ *                 example: clx123abc456
+ *               status:
+ *                 type: string
+ *                 description: Final transaction status
+ *                 enum:
+ *                   - COMPLETED
+ *                   - FAILED
+ *                 example: COMPLETED
+ *               paymentMethod:
+ *                 type: string
+ *                 description: Payment method used for the transaction
+ *                 example: UPI
+ *               notes:
+ *                 type: string
+ *                 description: Additional notes related to the transaction
+ *                 example: Payment received successfully from buyer
+ *           example:
+ *             bookingId: clx123abc456
+ *             status: COMPLETED
+ *             paymentMethod: UPI
+ *             notes: Payment received successfully from buyer
  *     responses:
  *       201:
  *         description: Transaction processed successfully
+ *       400:
+ *         description: Invalid request data
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Booking not found
  */
 router.post(
   '/',
