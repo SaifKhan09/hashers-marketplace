@@ -67,9 +67,6 @@ const router = Router();
  *               imageUrl:
  *                 type: string
  *                 example: https://example.com/item.jpg
- *               condition:
- *                 type: string
- *                 example: used
  *     responses:
  *       201:
  *         description: Item created successfully
